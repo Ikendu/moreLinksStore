@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   increaseQuantity,
@@ -15,19 +18,21 @@ const formatPrice = (price) =>
     maximumFractionDigits: 0,
   }).format(Number(price));
 
-export default function Cart({ onContinueShopping, onCheckout }) {
+export default function Cart({ onCheckout }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const itemCount = useSelector(selectCartCount);
   const subtotal = useSelector(selectCartSubtotal);
 
+  const navigate = useNavigate();
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <button
-          onClick={onContinueShopping}
-          className="mb-6 font-semibold text-blue-600 hover:underline">
-          ← Continue shopping
+          onClick={() => navigate("/")}
+          className="rounded-xl bg-slate-200 px-5 py-3 font-semibold text-slate-800 transition hover:bg-slate-300">
+          Continue Shopping
         </button>
 
         <h1 className="text-3xl font-black">Your shopping cart</h1>
@@ -43,7 +48,7 @@ export default function Cart({ onContinueShopping, onCheckout }) {
               Add a laptop or smartphone to get started.
             </p>
             <button
-              onClick={onContinueShopping}
+              onClick={() => navigate("/")}
               className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-bold text-white hover:bg-blue-700">
               Browse products
             </button>
