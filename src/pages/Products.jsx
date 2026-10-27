@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { getProducts } from "../services/productService";
 
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../features/cart/cartSlice";
+import { selectCartCount } from "../features/cart/cartSlice";
+
 const formatPrice = (price) =>
   new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -8,13 +12,15 @@ const formatPrice = (price) =>
     maximumFractionDigits: 0,
   }).format(Number(price));
 
-export default function Products() {
+export default function Products({ onOpenCart }) {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [cartCount, setCartCount] = useState(0);
+  //   const [cartCount, setCartCount] = useState(0);
+  const dispatch = useDispatch();
+  const itemCount = useSelector(selectCartCount);
 
   useEffect(() => {
     async function loadProducts() {
@@ -80,8 +86,9 @@ export default function Products() {
 
           <button
             type="button"
+            onClick={onOpenCart}
             className="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700">
-            🛒 Cart ({cartCount})
+            🛒 Cart ({itemCount})
           </button>
         </div>
       </header>
@@ -261,7 +268,7 @@ export default function Products() {
                       <button
                         type="button"
                         disabled={Number(product.stock_quantity) < 1}
-                        onClick={() => setCartCount((count) => count + 1)}
+                        onClick={() => dispatch(addToCart(product))}
                         className="mt-5 w-full rounded-xl bg-blue-600 px-4 py-3 font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300">
                         {Number(product.stock_quantity) > 0
                           ? "Add to cart"
